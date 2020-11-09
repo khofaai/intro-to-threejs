@@ -1,3 +1,7 @@
 import Viewer from './app/Viewer';
+const app = new Viewer;
 
-(new Viewer()).init();
+app.init();
+
+document.getElementById('addCube').addEventListener('click', () => app.addCube('randomCube', true));
+document.getElementById('clearAll').addEventListener('click', () => app.clearAll());

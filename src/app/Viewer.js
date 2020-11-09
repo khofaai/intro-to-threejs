@@ -15,36 +15,55 @@ class Viewer {
 		window.addEventListener('resize', () => this.onWindowResize())
   }
 
+  clearAll() {
+    this.scene.children.length = 0;
+    this.addGrid();
+  }
+
+  addGrid() {
+    const grid = new THREE.GridHelper( 50, 50, 0xffffff, 0x555555 );
+    this.scene.add( grid );
+  }
+
   addScene() {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color( 0xC0C0C0 );
-    const grid = new THREE.GridHelper( 50, 50, 0xffffff, 0x555555 );
-    this.scene.add( grid );
+    this.addGrid();
   }
 
   addCamera() {
     this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
   }
 
-  addTextureCube(name = null) {
+  addTextureCube(name = null, withControls = false) {
     const cubeWithTexture = Cube.create({
       size: [3, 3, 3], 
       texture: 'static/crate.gif', 
       edgeColor: 0xff0000,
     });
+    cubeWithTexture.name = name;
     this.scene.add(cubeWithTexture)
     cubeWithTexture.position.set(5, 0, 0);
-    if(name) this.objects[name] = cubeWithTexture;
+    if(name) {
+      this.objects[name] = cubeWithTexture
+    };
+    if(withControls) {
+      this.addControlToObjectByName(name);
+    }
   }
 
-  addCube(name = null) {
+  addCube(name = null, withControls = false) {
     const cube = Cube.create({
       size: [5, 5, 5], 
-      color: 0x00ff00, 
+      color: `#${(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0')}`, 
       edgeColor: 0xff0000,
     });
+    cube.name = name;
     this.scene.add( cube );
     if(name) this.objects[name] = cube;
+    if(withControls) {
+      this.addControlToObjectByName(name);
+    }
   }
 
   addLight() {
@@ -71,9 +90,10 @@ class Viewer {
 
   addControlToObjectByName(name) {
     const control = new TransformControls( this.camera, this.renderer.domElement );
+    control.name = `${name}Control`;
     control.addEventListener( 'change', () => this.render() );
 
-    control.addEventListener( 'dragging-changed', function ( event ) {
+    control.addEventListener( 'dragging-changed', ( event ) =>  {
     	this.orbit.enabled = !event.value;
     });
     
@@ -90,8 +110,6 @@ class Viewer {
   init() {
     this.addScene();
     this.addCamera();
-    this.addCube('firstCube');
-    this.addTextureCube('firstTextureCube');
     // this.loadGltfFile();
     // this.addText(); later
     this.addLight();
@@ -103,10 +121,10 @@ class Viewer {
     this.renderer.setSize( window.innerWidth, window.innerHeight );
     document.body.appendChild( this.renderer.domElement );
 
+    // this.addCube('firstCube', true);
+    // this.addTextureCube('firstTextureCube', true);
     this.animate();
     this.addControls();
-    this.addControlToObjectByName('firstCube');
-    this.addControlToObjectByName('firstTextureCube');
   }
 
   animate() {
