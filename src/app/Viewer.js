@@ -12,7 +12,7 @@ class Viewer {
     this.clock = null;
     this.orbit = null;
     this.objects = {};
-		window.addEventListener('resize', () => this.onWindowResize())
+		window.addEventListener('resize', () => this.onWindowResize());
   }
 
   clearAll() {
@@ -33,6 +33,7 @@ class Viewer {
 
   addCamera() {
     this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+    // this.camera = new THREE.OrthographicCamera(  window.innerWidth / - 2,  window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, 0.1, 1000 )
   }
 
   addTextureCube(name = null, withControls = false) {
@@ -54,7 +55,7 @@ class Viewer {
 
   addCube(name = null, withControls = false) {
     const cube = Cube.create({
-      size: [5, 5, 5], 
+      size: [0.1, 0.1, 0.1], 
       color: `#${(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0')}`, 
       edgeColor: 0xff0000,
     });
@@ -112,8 +113,8 @@ class Viewer {
     this.addCamera();
     // this.loadGltfFile();
     // this.addText(); later
-    this.addLight();
-    this.clock = new THREE.Clock();
+    // this.addLight();
+    // this.clock = new THREE.Clock();
     this.camera.position.x = 15;
     this.camera.position.y = 15;
     this.camera.position.z = 30;
@@ -121,16 +122,16 @@ class Viewer {
     this.renderer.setSize( window.innerWidth, window.innerHeight );
     document.body.appendChild( this.renderer.domElement );
 
-    // this.addCube('firstCube', true);
+    this.addCube('firstCube', true);
     // this.addTextureCube('firstTextureCube', true);
     this.animate();
     this.addControls();
   }
 
   animate() {
-    const dt = this.clock.getDelta();
+    // const dt = this.clock.getDelta();
 
-    if ( this.mixer ) this.mixer.update( dt );
+    // if ( this.mixer ) this.mixer.update( dt );
     requestAnimationFrame(() => this.animate());
 
     // this.group.rotation.x += 0.01;
